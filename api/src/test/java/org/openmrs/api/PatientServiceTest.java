@@ -172,7 +172,8 @@ public class PatientServiceTest extends BaseContextSensitiveTest {
 		expectedValidators.add(patientService.getIdentifierValidator("org.openmrs.patient.impl.LuhnIdentifierValidator"));
 		expectedValidators
 		        .add(patientService.getIdentifierValidator("org.openmrs.patient.impl.VerhoeffIdentifierValidator"));
-		assertEquals(2, patientService.getAllIdentifierValidators().size());
+		expectedValidators.add(patientService.getIdentifierValidator("org.openmrs.patient.impl.DammIdentifierValidator"));
+		assertEquals(3, patientService.getAllIdentifierValidators().size());
 		assertCollectionContentsEquals(expectedValidators, patientService.getAllIdentifierValidators());
 	}
 
