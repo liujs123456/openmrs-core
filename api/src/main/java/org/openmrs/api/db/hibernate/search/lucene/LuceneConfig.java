@@ -18,6 +18,7 @@ import org.apache.lucene.analysis.ngram.EdgeNGramFilterFactory;
 import org.apache.lucene.analysis.ngram.NGramFilterFactory;
 import org.apache.lucene.analysis.phonetic.PhoneticFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
+import org.apache.lucene.analysis.synonym.SynonymGraphFilterFactory;
 import org.hibernate.search.backend.lucene.analysis.LuceneAnalysisConfigurationContext;
 import org.hibernate.search.backend.lucene.analysis.LuceneAnalysisConfigurer;
 import org.openmrs.api.db.hibernate.search.SearchAnalysis;
@@ -61,5 +62,11 @@ public class LuceneConfig implements LuceneAnalysisConfigurer {
 		context.analyzer(SearchAnalysis.SOUNDEX_ANALYZER).custom().tokenizer(StandardTokenizerFactory.class)
 		        .tokenFilter(ClassicFilterFactory.class).tokenFilter(LowerCaseFilterFactory.class)
 		        .tokenFilter(PhoneticFilterFactory.class).param("encoder", "Soundex");
+
+		context.analyzer(SearchAnalysis.NICKNAME_ANALYZER).custom().tokenizer(WhitespaceTokenizerFactory.class)
+		        .tokenFilter(ClassicFilterFactory.class).tokenFilter(LowerCaseFilterFactory.class)
+		        .tokenFilter(ASCIIFoldingFilterFactory.class).tokenFilter(SynonymGraphFilterFactory.class)
+		        .param("synonyms", "org/openmrs/api/db/hibernate/search/nicknames.txt").param("expand", "true")
+		        .param("ignoreCase", "true");
 	}
 }

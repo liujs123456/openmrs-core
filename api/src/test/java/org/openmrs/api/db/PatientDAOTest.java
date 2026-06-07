@@ -1134,6 +1134,59 @@ public class PatientDAOTest extends BaseContextSensitiveTest {
 	}
 
 	/**
+	 * With nickname matching enabled, a search by a common nickname finds a patient registered under
+	 * the formal given name.
+	 *
+	 * @see HibernatePatientDAO#getPatients(String, String, java.util.List, boolean, Integer, Integer,
+	 *      boolean)
+	 */
+	@Test
+	public void getPatients_shouldGetPatientByNicknameWhenNicknameMatchingEnabled() {
+		String oldPropertyValue = globalPropertiesTestHelper
+		        .setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_PATIENT_SEARCH_MATCH_NICKNAME, "true");
+
+		// Patient 47 is registered under the formal given name "charlie". "chuck" is a common
+		// nickname for it (see nicknames.txt) but is not an exact or start/anywhere substring of
+		// the name, so it can only be matched through the nickname analyzer.
+		List<Patient> patients = dao.getPatients("chuck", 0, 11);
+
+		assertTrue(patients.stream().anyMatch(p -> p.getPatientId().equals(47)),
+		    "expected patient 47 (stored as \"charlie\") to be found by the nickname \"chuck\"");
+
+		if (oldPropertyValue != null) {
+			globalPropertiesTestHelper.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_PATIENT_SEARCH_MATCH_NICKNAME,
+			    oldPropertyValue);
+		} else {
+			globalPropertiesTestHelper.purgeGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_PATIENT_SEARCH_MATCH_NICKNAME);
+		}
+	}
+
+	/**
+	 * Regression: with nickname matching disabled (the default), a nickname does not match the formal
+	 * name, so behaviour is unchanged for existing deployments.
+	 *
+	 * @see HibernatePatientDAO#getPatients(String, String, java.util.List, boolean, Integer, Integer,
+	 *      boolean)
+	 */
+	@Test
+	public void getPatients_shouldNotGetPatientByNicknameWhenNicknameMatchingDisabled() {
+		String oldPropertyValue = globalPropertiesTestHelper
+		        .setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_PATIENT_SEARCH_MATCH_NICKNAME, "false");
+
+		List<Patient> patients = dao.getPatients("chuck", 0, 11);
+
+		assertTrue(patients.stream().noneMatch(p -> p.getPatientId().equals(47)),
+		    "patient 47 (stored as \"charlie\") should not be matched by \"chuck\" when nickname matching is off");
+
+		if (oldPropertyValue != null) {
+			globalPropertiesTestHelper.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_PATIENT_SEARCH_MATCH_NICKNAME,
+			    oldPropertyValue);
+		} else {
+			globalPropertiesTestHelper.purgeGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_PATIENT_SEARCH_MATCH_NICKNAME);
+		}
+	}
+
+	/**
 	 * @see HibernatePatientDAO#getPatients(String, String, java.util.List, boolean, Integer, Integer,
 	 *      boolean)
 	 */

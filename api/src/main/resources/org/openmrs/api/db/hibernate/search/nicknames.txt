@@ -1,0 +1,41 @@
+# Curated English given-name nickname dictionary (Solr synonym format).
+#
+# Used by the "nicknameAnalyzer" in LuceneConfig to expand patient given/middle
+# names at index time so a search by a common nickname matches the formal name
+# (and vice versa). Each line is an equivalence group: with expand=true every
+# term on the line is treated as a synonym of every other term, which keeps the
+# matching symmetric (a stored "Robert" matches a search for "Bob", and a stored
+# "Bob" matches a search for "Robert").
+#
+# This list is intentionally English-only and small for v1; multi-locale
+# dictionaries are out of scope. Keep entries lower-case.
+
+robert, rob, bob, bobby, robbie
+william, will, bill, billy, liam
+richard, rick, rich, dick, ricky
+james, jim, jimmy, jamie
+john, jack, johnny, jon
+charles, charlie, chuck, chas
+thomas, tom, tommy
+michael, mike, mikey, mick
+joseph, joe, joey
+edward, ed, eddie, ted, teddy
+anthony, tony
+daniel, dan, danny
+matthew, matt
+andrew, andy, drew
+nicholas, nick, nicky
+benjamin, ben, benny
+samuel, sam, sammy
+alexander, alex, al, xander
+margaret, maggie, peggy, meg, marge
+elizabeth, liz, beth, betty, eliza, lizzie
+katherine, catherine, kate, katie, kathy, cat
+jennifer, jen, jenny
+patricia, pat, patty, trish
+deborah, deb, debbie
+susan, sue, susie
+barbara, barb, babs
+victoria, vicky, tori
+christine, chris, chrissy
+rebecca, becky, becca
