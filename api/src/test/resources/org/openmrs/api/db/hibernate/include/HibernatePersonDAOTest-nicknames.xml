@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+<dataset>
+    <!--
+        People stored under a formal given name, used to test nickname-aware search:
+        a clerk searching by a common nickname ("Bob") should find a patient
+        registered under the formal name ("Robert"), and vice versa.
+    -->
+    <person person_id="60" gender="M" birthdate="1980-01-01" birthdate_estimated="0" dead="false" creator="1" date_created="2013-03-01 12:34:56.7" voided="false" uuid="6B7A1C0E-2C3D-4E5F-8A9B-0C1D2E3F4A60"/>
+    <person person_id="61" gender="F" birthdate="1982-02-02" birthdate_estimated="0" dead="false" creator="1" date_created="2013-03-01 12:34:56.7" voided="false" uuid="6B7A1C0E-2C3D-4E5F-8A9B-0C1D2E3F4A61"/>
+
+    <person_name person_name_id="60" preferred="true" person_id="60" given_name="Robert" middle_name="" family_name="Nicktest" creator="1" date_created="2013-03-01 12:34:56.7" voided="false" void_reason="" uuid="7C8B2D1F-3D4E-5F6A-9B0C-1D2E3F4A5B60"/>
+    <person_name person_name_id="61" preferred="true" person_id="61" given_name="Liz" middle_name="" family_name="Nicktest" creator="1" date_created="2013-03-01 12:34:56.7" voided="false" void_reason="" uuid="7C8B2D1F-3D4E-5F6A-9B0C-1D2E3F4A5B61"/>
+</dataset>

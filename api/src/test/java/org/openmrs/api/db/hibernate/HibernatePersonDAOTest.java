@@ -37,6 +37,8 @@ public class HibernatePersonDAOTest extends BaseContextSensitiveTest {
 
 	private final static String PEOPLE_FROM_THE_SHIRE_XML = "org/openmrs/api/db/hibernate/include/HibernatePersonDAOTest-people.xml";
 
+	private final static String NICKNAME_PEOPLE_XML = "org/openmrs/api/db/hibernate/include/HibernatePersonDAOTest-nicknames.xml";
+
 	private SessionFactory sessionFactory;
 
 	private HibernatePersonDAO hibernatePersonDAO;
@@ -329,6 +331,63 @@ public class HibernatePersonDAOTest extends BaseContextSensitiveTest {
 		assertEquals("Baggins", people.get(0).getFamilyName());
 		assertEquals("Baggins", people.get(1).getFamilyName());
 		assertFalse(people.get(0).getGivenName().equalsIgnoreCase(people.get(1).getGivenName()));
+	}
+
+	/**
+	 * With nickname matching enabled, a search by a common nickname should find a person stored under
+	 * the formal given name (e.g. "Bob" finds a patient registered as "Robert").
+	 *
+	 * @see HibernatePersonDAO#getPeople(String, Boolean)
+	 */
+	@Test
+	public void getPeople_shouldGetPersonByNicknameOfGivenNameWhenNicknameSearchIsEnabled() {
+		executeDataSet(NICKNAME_PEOPLE_XML);
+		globalPropertiesTestHelper.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_PATIENT_SEARCH_MATCH_NICKNAME, "true");
+		updateSearchIndex();
+
+		List<Person> people = hibernatePersonDAO.getPeople("Bob", false);
+		logPeople(people);
+
+		assertEquals(1, people.size());
+		assertEquals("Robert", people.get(0).getGivenName());
+	}
+
+	/**
+	 * Bidirectional dictionary entries make the matching symmetric: a person stored under a nickname
+	 * ("Liz") is found by searching for the formal name ("Elizabeth").
+	 *
+	 * @see HibernatePersonDAO#getPeople(String, Boolean)
+	 */
+	@Test
+	public void getPeople_shouldGetPersonByFormalNameWhenStoredUnderNicknameAndNicknameSearchIsEnabled() {
+		executeDataSet(NICKNAME_PEOPLE_XML);
+		globalPropertiesTestHelper.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_PATIENT_SEARCH_MATCH_NICKNAME, "true");
+		updateSearchIndex();
+
+		List<Person> people = hibernatePersonDAO.getPeople("Elizabeth", false);
+		logPeople(people);
+
+		assertEquals(1, people.size());
+		assertEquals("Liz", people.get(0).getGivenName());
+	}
+
+	/**
+	 * Regression: with nickname matching disabled (the default), behaviour is unchanged - a nickname
+	 * does not match the formal name, so the nickname fields are never queried.
+	 *
+	 * @see HibernatePersonDAO#getPeople(String, Boolean)
+	 */
+	@Test
+	public void getPeople_shouldNotGetPersonByNicknameWhenNicknameSearchIsDisabled() {
+		executeDataSet(NICKNAME_PEOPLE_XML);
+		globalPropertiesTestHelper.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_PATIENT_SEARCH_MATCH_NICKNAME,
+		    "false");
+		updateSearchIndex();
+
+		List<Person> people = hibernatePersonDAO.getPeople("Bob", false);
+		logPeople(people);
+
+		assertEquals(0, people.size());
 	}
 
 	/**
