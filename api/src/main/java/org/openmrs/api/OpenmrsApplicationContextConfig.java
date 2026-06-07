@@ -25,6 +25,7 @@ import org.openmrs.obs.handler.BinaryStreamHandler;
 import org.openmrs.obs.handler.ImageHandler;
 import org.openmrs.obs.handler.TextHandler;
 import org.openmrs.patient.IdentifierValidator;
+import org.openmrs.patient.impl.DammIdentifierValidator;
 import org.openmrs.patient.impl.LuhnIdentifierValidator;
 import org.openmrs.patient.impl.VerhoeffIdentifierValidator;
 import org.openmrs.serialization.OpenmrsSerializer;
@@ -83,10 +84,11 @@ public class OpenmrsApplicationContextConfig {
 
 	@Bean
 	public Map<Class<?>, IdentifierValidator> identifierValidators(LuhnIdentifierValidator luhnIdentifierValidator,
-	        VerhoeffIdentifierValidator verhoeffIdentifierValidator) {
+	        VerhoeffIdentifierValidator verhoeffIdentifierValidator, DammIdentifierValidator dammIdentifierValidator) {
 		Map<Class<?>, IdentifierValidator> map = new LinkedHashMap<>();
 		map.put(LuhnIdentifierValidator.class, luhnIdentifierValidator);
 		map.put(VerhoeffIdentifierValidator.class, verhoeffIdentifierValidator);
+		map.put(DammIdentifierValidator.class, dammIdentifierValidator);
 		return map;
 	}
 
